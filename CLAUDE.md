@@ -14,7 +14,7 @@ Sister-repo to `saits-sync` and `saits-observability`. Same conventions, differe
 
 Every PR must pass these before crew4 merges:
 
-1. **No plaintext secrets** — `git-secrets` scan + manual grep for `BEGIN PRIVATE KEY`, `xoxb-`, `sk_live_`, `hvs.`, Vault tokens, Discord tokens, Anthropic OAuth tokens
+1. **No plaintext secrets** — `git-secrets` scan + manual grep for `BEGIN PRIVATE KEY`, `xoxb-`, `sk_live_`, `hvs.`, `ghp_`, `github_pat_`, `AKIA`, `ASIA`, `sk-ant-`, Vault tokens, Discord bot tokens, Anthropic OAuth tokens
 2. **NetworkPolicy default-deny** — any new namespace/tenant must inherit default-deny; explicit allow rules need crew4 + crew6 dual-review
 3. **Kyverno policy = enforce mode** — `audit` mode allowed for new policies during burn-in (max 1 week), then must flip to `enforce` or be removed
 4. **Vault policy least-privilege** — no `*` paths, no `sudo` capability, no `root` token issuance from CI/AppRole
@@ -31,7 +31,7 @@ Every PR must pass these before crew4 merges:
 1. **No secrets via Discord** — even "internal" channels leak via history/export. Read from Vault at incident-time, never paste secrets into a channel.
 2. **Vault is single source of truth for credentials** — no .env duplication of Vault-managed secrets in any service repo.
 3. **All M2M traffic must be mTLS** — plain-HTTP between services across tenant boundaries is a P0 incident.
-4. **All container images must be cosign-signed** — Kyverno enforces; no `imagePullPolicy: Always` workaround.
+4. **All container images must be cosign-signed** — Kyverno verifies at admission. Bypass surfaces that must NEVER appear in a PR: `--insecure-registry`, unsigned digest pin, `verifyImages.required: false` policy escape, `verifyImages` rule excluded from a namespace.
 
 ## Coordination with sibling repos
 

@@ -3,8 +3,8 @@
 Security primitives for saitsCloud. Sister-repo to `saits-sync` (central Redis state)
 and `saits-observability` (Prom/Loki/Tempo/Grafana).
 
-> Note: the repo name has a trailing `-` because `saits-security` was taken at create-time.
-> Don't rename — the URL is baked into Helm chart sources and Argo apps already.
+> Note: the repo name has a trailing `-` because `saits-security` was taken at create-time
+> (operator typo). Rename if/when GitHub allows; no consumers exist yet so the change is cheap.
 
 ## Scope
 
@@ -44,15 +44,17 @@ and `saits-observability` (Prom/Loki/Tempo/Grafana).
                   └──────────────────────────────────────┘
 ```
 
-## What lives here
+## Planned layout
 
-- `vault/` — Vault Helm chart values, PKI mount config, AppRole policies
-- `cilium/` — NetworkPolicy templates (default-deny + per-tenant allow + ClusterMesh hybrid back-channel)
-- `falco/` — runtime rules (per-tenant violation routing → Alertmanager)
-- `kyverno/` — admission policies (cosign image-signing, no-priv-esc, no-host-network, no-host-pid)
-- `terraform/vault-bootstrap/` — AppRole + PKI mount Terraform
-- `terraform/clerk-orgs/` — per-tenant Clerk org provisioning (matches Grafana org in observability)
-- `siem/` — Elastic forwarder config + correlation rules
+Populated by follow-up PRs from crew6 / crew7. v0 ships docs only.
+
+- `vault/` — Vault Helm chart values, PKI mount config, AppRole policies (crew6)
+- `cilium/` — NetworkPolicy templates: default-deny + per-tenant allow + ClusterMesh hybrid back-channel (crew6)
+- `falco/` — runtime rules with per-tenant violation routing → Alertmanager (crew6)
+- `kyverno/` — admission policies: cosign image-signing, no-priv-esc, no-host-network, no-host-pid (crew4)
+- `terraform/vault-bootstrap/` — AppRole + PKI mount Terraform (crew6)
+- `terraform/clerk-orgs/` — per-tenant Clerk org provisioning (matches Grafana org in observability) (crew7)
+- `siem/` — Elastic forwarder config + correlation rules (crew6)
 
 ## What does NOT live here
 
