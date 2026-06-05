@@ -16,7 +16,13 @@ plan time — never stored as Terraform variables or in state as plaintext.
 
 ## What this does NOT manage
 
-- SAML/Enterprise IdP connections — configured via Clerk Dashboard, `saml_connection_id` referenced only
+- **Per-org IdP scoping** — the Clerk Terraform provider has no resource for
+  restricting which social connections a specific organization can use.
+  `allowed_providers` in the `tenants` variable is stored in `public_metadata`
+  and read by **sc-api** at runtime to reject logins from unconfigured
+  providers. Terraform does NOT enforce this restriction.
+- **SAML/Enterprise connections** — must be created via Clerk Dashboard.
+  `saml_connection_id` is stored in `public_metadata` for sc-api routing only.
 - Vault PKI and mTLS — see `../vault/`
 - Redis ACL users — see `saits-sync` control-plane scripts
 

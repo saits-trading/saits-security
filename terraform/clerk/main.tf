@@ -98,11 +98,16 @@ resource "clerk_organization" "tenant" {
   name = each.value.name
   slug = replace(lower(each.value.name), "/[^a-z0-9-]/", "-")
 
+  # allowed_providers + saml_connection_id are stored here for sc-api to
+  # reference at runtime. They are NOT enforced by Terraform — the Clerk
+  # provider has no per-org IdP-scoping resource. Enforcement = sc-api layer.
   public_metadata = jsonencode({
-    tenant_id    = each.key
-    tier         = each.value.tier
-    subtenant_id = ""
-    environment  = var.environment
+    tenant_id          = each.key
+    tier               = each.value.tier
+    subtenant_id       = ""
+    environment        = var.environment
+    allowed_providers  = each.value.allowed_providers
+    saml_connection_id = each.value.saml_connection_id
   })
 
   private_metadata = jsonencode({

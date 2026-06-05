@@ -25,21 +25,24 @@ variable "tenants" {
     Map of tenant_id → tenant config. tenant_id must match the UUID stored in
     saits-sync (tenant:<id>:tenant RedisJSON doc).
 
-    allowed_providers controls which social connections the tenant's users can
-    use. Restricting to google_oauth only is common for enterprise SAML tenants
-    that want a single IdP.
-
-    saml_connection_id is optional — only set for Enterprise tenants that have
-    already configured a SAML IdP via Clerk Dashboard + separately provisioned
-    the connection.
+    Per-org IdP restrictions (which social connections a tenant's users can use)
+    are NOT enforced at this Terraform layer — the Clerk provider does not
+    expose per-organization allowed-provider scoping. Enforcement lives in:
+      (a) sc-api: reads `org.public_metadata.allowed_providers` from the Clerk
+          JWT and rejects logins from unconfigured providers at the application
+          layer.
+      (b) Clerk Dashboard: per-org SAML connections must be created manually
+          and are referenced by `saml_connection_id` in public_metadata for
+          sc-api routing — Terraform does not create or manage SAML connections.
   EOT
 
   type = map(object({
-    name              = string
-    tier              = string # shared | private | hybrid
-    allowed_providers = list(string) # google_oauth | github | microsoft | email_password | saml
-    saml_connection_id = optional(string)
-    admin_email       = string
+    name        = string
+    tier        = string # shared | private | hybrid
+    admin_email = string
+    # Informational — stored in public_metadata for sc-api, not TF-enforced:
+    allowed_providers  = optional(list(string), ["google_oauth", "github", "email_password"])
+    saml_connection_id = optional(string, "")
   }))
   default = {}
 }
