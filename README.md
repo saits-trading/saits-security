@@ -3,9 +3,6 @@
 Security primitives for saitsCloud. Sister-repo to `saits-sync` (central Redis state)
 and `saits-observability` (Prom/Loki/Tempo/Grafana).
 
-> Note: the repo name has a trailing `-` because `saits-security` was taken at create-time
-> (operator typo). Rename if/when GitHub allows; no consumers exist yet so the change is cheap.
-
 ## Scope
 
 | Layer | Tool | Purpose |
@@ -53,7 +50,7 @@ Populated by follow-up PRs from crew6 / crew7. v0 ships docs only.
 - `falco/` — runtime rules with per-tenant violation routing → Alertmanager (crew6)
 - `kyverno/` — admission policies: cosign image-signing, no-priv-esc, no-host-network, no-host-pid (crew4)
 - `terraform/vault-bootstrap/` — AppRole + PKI mount Terraform (crew6)
-- `terraform/clerk-orgs/` — per-tenant Clerk org provisioning (matches Grafana org in observability) (crew7)
+- `terraform/clerk/` — per-tenant Clerk org provisioning, JWT template, OAuth social connections (crew7) **[live on main]**
 - `siem/` — Elastic forwarder config + correlation rules (crew6)
 
 ## What does NOT live here
